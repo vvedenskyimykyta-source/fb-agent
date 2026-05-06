@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>FB Agent · Settings v2 — 6 sections</title>
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="settings-v2.css"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="sidebar.jsx"></script>
+<script type="text/babel" src="settings-v2.jsx"></script>
+<script type="text/babel" src="settings-v2-rules.jsx"></script>
+<script type="text/babel" src="settings-v2b-deeplinks.jsx"></script>
+<script type="text/babel" src="settings-v2b.jsx"></script>
+<style>
+  body { background: #f0eee9; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="env,react">
+const { SettingsV2bPage } = window;
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection
+        id="states"
+        title="FB Agent · Settings — main states"
+        subtitle="Soft-lock · Meta required · others recommended · skip-for-now"
+      >
+        <DCArtboard id="fresh" label="A · Fresh · only Meta blocks usage · Web + Deep Links editable" width={1440} height={1980}>
+          <SettingsV2bPage scenario="fresh"/>
+        </DCArtboard>
+
+        <DCArtboard id="configured" label="B · All 6 configured · Go to FB Agent active" width={1440} height={2480}>
+          <SettingsV2bPage scenario="configured"/>
+        </DCArtboard>
+
+        <DCArtboard id="skipped" label="C · Skipped state — Notifications collapsed as 'Skipped, can configure later'" width={1440} height={2400} focusSection="notifs">
+          <SettingsV2bPage scenario="skipped-demo" focusSection="notifs"/>
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="deeplinks-focus"
+        title="Deep Links · new section"
+        subtitle="Empty + filled states for the new section"
+      >
+        <DCArtboard id="dl-filled" label="D · Deep Links · filled table with iOS / Android / CPP" width={1440} height={2480}>
+          <SettingsV2bPage scenario="configured" focusSection="deeplinks"/>
+        </DCArtboard>
+
+        <DCArtboard id="dl-modal" label="E · Add Deep Link modal · Universal / Scheme / CPP" width={1440} height={2480}>
+          <SettingsV2bPage scenario="configured" initialModal="deeplink"/>
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="notes"
+        title="Design notes"
+        subtitle="Why the page was restructured"
+      >
+        <DCPostIt width={300} height={220}>
+          <strong>Required vs Recommended</strong><br/><br/>
+          Only Meta is Required (red badge). Everything else is Recommended (gray badge) — a calm signal that the page is configured to be left partial.
+        </DCPostIt>
+        <DCPostIt width={300} height={220}>
+          <strong>Soft-lock with tailored copy</strong><br/><br/>
+          Templates / Rules / Notifications still lock until Meta connects, but each one says <em>why</em> it needs Meta. Web Links and Deep Links are always editable.
+        </DCPostIt>
+        <DCPostIt width={300} height={220}>
+          <strong>Skip-for-now</strong><br/><br/>
+          Each non-required section has a quiet ghost button. Skipped sections collapse into a thin row with a "Configure now" affordance — not gone, just out of the way.
+        </DCPostIt>
+        <DCPostIt width={300} height={220}>
+          <strong>Header speaks honestly</strong><br/><br/>
+          Discard/Save removed — saving happens per row / toggle. Progress shows configured + skipped counts. "Go to FB Agent →" lights up the moment Meta is connected.
+        </DCPostIt>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

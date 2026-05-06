@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>FB Agent · Launch Campaign — Print</title>
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="launch.css"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  body {
+    margin: 0;
+    background: #ffffff;
+    font-family: var(--font-sans);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  /* On screen: stack screens vertically with light page-break visualisation */
+  .pp-page {
+    width: 1440px;
+    margin: 0 auto 24px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+  }
+  .pp-page-label {
+    width: 1440px;
+    margin: 24px auto 8px;
+    padding: 12px 20px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+    background: #f4f5f7;
+    border-radius: 8px 8px 0 0;
+  }
+  .pp-page-label small {
+    margin-left: 8px;
+    font-weight: 500;
+    color: #6b7280;
+  }
+  .pp-cover {
+    width: 1440px; margin: 0 auto 32px;
+    padding: 32px 28px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+  }
+  .pp-cover h1 {
+    margin: 0 0 6px;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #111827;
+  }
+  .pp-cover .subtitle {
+    font-size: 16px;
+    color: #4b5563;
+    margin-bottom: 18px;
+  }
+  .pp-cover .meta {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .pp-cover .meta-item {
+    padding: 12px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+  .pp-cover .meta-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #6b7280;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .pp-cover .meta-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111827;
+  }
+  .pp-cover .toc {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid #e5e7eb;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 24px;
+  }
+  .pp-cover .toc-item {
+    display: flex; align-items: baseline; gap: 8px;
+    font-size: 13px; color: #111827;
+  }
+  .pp-cover .toc-num {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: #6b7280;
+    width: 24px;
+  }
+  .pp-cover .toc-name { font-weight: 500; }
+  .pp-cover .toc-sub { color: #6b7280; font-size: 12px; }
+
+  /* Print rules */
+  @page {
+    size: 1440px 1700px;
+    margin: 0;
+  }
+  @media print {
+    body { background: #fff; }
+    .pp-page-label { display: none; }
+    .pp-cover {
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      width: 1440px;
+      height: 1700px;
+      box-sizing: border-box;
+      page-break-after: always;
+      break-after: page;
+      padding: 60px 64px;
+    }
+    .pp-page {
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      width: 1440px;
+      page-break-after: always;
+      break-after: page;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .pp-page:last-child { page-break-after: auto; break-after: auto; }
+    /* Cancel any animations / transitions */
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="icons.jsx" type="text/babel"></script>
+<script src="launch-chat.jsx" type="text/babel"></script>
+<script src="launch-steps.jsx" type="text/babel"></script>
+<script src="launch-pipeline.jsx" type="text/babel"></script>
+
+<script type="text/babel">
+const { LaunchPipeline } = window;
+
+const SCREENS = [
+  { id: 'context',   num: '01', title: 'Step 1 · Context',            sub: 'Product, app, funnel & deep link' },
+  { id: 'campaign',  num: '02', title: 'Step 2 · Campaign',           sub: 'Template applied, fields prefilled' },
+  { id: 'adsets',    num: '03', title: 'Step 3 · Ad sets',            sub: '4 ad sets · DE / AT / CH split · one expanded' },
+  { id: 'ads',       num: '04', title: 'Step 4 · Ads',                sub: '7 creatives · 5 video · 1 image · 1 carousel' },
+  { id: 'rules',     num: '05', title: 'Step 5 · Automation rules',    sub: '5 rules from Settings · 3 attached' },
+  { id: 'review',    num: '06', title: 'Step 6 · Review & launch',    sub: 'Final summary before going live' },
+  { id: 'launching', num: '07', title: 'Launching overlay',           sub: 'Submitting to Meta API · 30–60s' },
+  { id: 'launched',  num: '08', title: 'Launched · Live dashboard',   sub: 'Campaign is live · early performance' },
+];
+
+function Frame({ scenario }) {
+  return (
+    <div className="lp-app" data-screen-label={scenario} style={{ width: 1440 }}>
+      <div style={{ width: 220, background: '#fff', borderRight: '1px solid #e5e7eb', padding: 14, display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <div style={{ padding: '6px 8px 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ width: 24, height: 24, borderRadius: 6, background: '#111827', color: 'white', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700 }}>A</div>
+          <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.01em' }}>AdFactory</span>
+        </div>
+        {[
+          { label: 'Dashboard' },
+          { label: 'Launch campaign', active: true },
+          { label: 'Live campaigns' },
+          { label: 'Asset Library' },
+          { label: 'Rules & automations' },
+          { label: 'Reports' },
+          { label: 'Settings' },
+        ].map((n) => (
+          <div key={n.label} style={{ padding: '7px 10px', borderRadius: 6, fontSize: 12.5, color: n.active ? '#111827' : '#6b7280', background: n.active ? '#f4f5f7' : 'transparent', fontWeight: n.active ? 600 : 500 }}>
+            {n.label}
+          </div>
+        ))}
+      </div>
+      <div className="lp-main">
+        <LaunchPipeline scenario={scenario}/>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <div className="pp-cover">
+        <h1>FB Agent · Launch Campaign</h1>
+        <div className="subtitle">Hi-fi flow — 8 screens, one persistent layout</div>
+
+        <div className="meta">
+          <div className="meta-item">
+            <div className="meta-label">Product</div>
+            <div className="meta-value">CheckMyMeal · iOS</div>
+          </div>
+          <div className="meta-item">
+            <div className="meta-label">Funnel</div>
+            <div className="meta-value">Quiz #3</div>
+          </div>
+          <div className="meta-item">
+            <div className="meta-label">Geos · Budget</div>
+            <div className="meta-value">DACH · ABO $80/d</div>
+          </div>
+          <div className="meta-item">
+            <div className="meta-label">Surface area</div>
+            <div className="meta-value">8 screens · 1 flow</div>
+          </div>
+        </div>
+
+        <div className="toc">
+          {SCREENS.map((s) => (
+            <div key={s.id} className="toc-item">
+              <span className="toc-num">{s.num}</span>
+              <span>
+                <span className="toc-name">{s.title}</span>
+                <span className="toc-sub"> — {s.sub}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {SCREENS.map((s) => (
+        <React.Fragment key={s.id}>
+          <div className="pp-page-label">
+            {s.num} · {s.title}
+            <small>{s.sub}</small>
+          </div>
+          <div className="pp-page">
+            <Frame scenario={s.id}/>
+          </div>
+        </React.Fragment>
+      ))}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+
+// Auto-print after fonts + JSX have loaded
+(async function autoPrint() {
+  try {
+    if (document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
+  } catch (e) {}
+  // Wait for React + Babel render
+  await new Promise(r => setTimeout(r, 1500));
+  window.print();
+})();
+</script>
+</body>
+</html>

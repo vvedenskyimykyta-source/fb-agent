@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>FB Agent · Settings — concepts</title>
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="settings.css"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="sidebar.jsx"></script>
+<script type="text/babel" src="settings.jsx"></script>
+<style>
+  body { background: #f0eee9; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="env,react">
+const { SettingsPage } = window;
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection
+        id="states"
+        title="FB Agent · Settings"
+        subtitle="One-time setup before the first AI campaign · 5 sections × 4 progress states + 2 modals"
+      >
+        <DCArtboard id="all-configured" label="A · All configured (default state · everything green)" width={1440} height={1280}>
+          <SettingsPage scenario="configured"/>
+        </DCArtboard>
+
+        <DCArtboard id="wizard" label="B · First-time wizard · only Section 1 active, rest disabled" width={1440} height={1280}>
+          <SettingsPage scenario="wizard"/>
+        </DCArtboard>
+
+        <DCArtboard id="mid" label="C · Mid-setup · pixel section in focus" width={1440} height={1280}>
+          <SettingsPage scenario="mid"/>
+        </DCArtboard>
+
+        <DCArtboard id="complete" label="D · 5 of 5 complete · ready to launch" width={1440} height={1280}>
+          <SettingsPage scenario="complete"/>
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="modals"
+        title="Modals · workspace + invite"
+        subtitle="Triggered from Section 4 / Section 5 action buttons"
+      >
+        <DCArtboard id="new-workspace" label="New Workspace modal" width={1440} height={1280}>
+          <SettingsPage scenario="configured" initialModal="workspace"/>
+        </DCArtboard>
+
+        <DCArtboard id="invite-member" label="Invite Member modal" width={1440} height={1280}>
+          <SettingsPage scenario="configured" initialModal="invite"/>
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection
+        id="notes"
+        title="Design notes"
+        subtitle="Why the page is structured this way"
+      >
+        <DCPostIt width={300} height={220}>
+          <strong>Numbered sections, not tabs</strong><br/><br/>
+          Settings here are <em>setup</em>, not preferences. Numbering reinforces sequence — connect first, then pixel, then deep links, then workspaces, then team. Progress bar at top reflects this.
+        </DCPostIt>
+        <DCPostIt width={300} height={220}>
+          <strong>Disabled-not-hidden sections</strong><br/><br/>
+          New users see all 5 sections greyed out — the full scope is visible from minute one. Reduces "wait, is that all?" anxiety. Each section unlocks as the prior one completes.
+        </DCPostIt>
+        <DCPostIt width={300} height={220}>
+          <strong>Coming-soon strip at the bottom</strong><br/><br/>
+          Notifications · Billing · API · Audit Log live in the TOC and at page bottom as dashed cards. Sets expectations without cluttering the live UI.
+        </DCPostIt>
+        <DCPostIt width={300} height={220}>
+          <strong>Workspace + Member as inline tables</strong><br/><br/>
+          Both are list-heavy and benefit from a real table — sortable columns, hover row, inline edit. Modal for create/invite, never a side panel.
+        </DCPostIt>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

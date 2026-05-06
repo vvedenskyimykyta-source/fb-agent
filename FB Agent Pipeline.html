@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>FB Agent · Setup Pipeline</title>
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="settings.css"/>
+<link rel="stylesheet" href="pipeline.css"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="sidebar.jsx"></script>
+<script type="text/babel" src="settings.jsx"></script>
+<script type="text/babel" src="pipeline.jsx"></script>
+<style>
+  body { background: #f0eee9; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="env,react">
+const { PipelinePage } = window;
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection
+        id="pipeline"
+        title="FB Agent · Setup Pipeline"
+        subtitle="Hybrid setup · agent leads on the left, manual control on the right · ~10 minutes"
+      >
+        <DCArtboard id="pipeline-main" label="Setup pipeline · agent on step 3 of 5" width={1440} height={900}>
+          <PipelinePage/>
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="notes" title="Design notes">
+        <DCPostIt width={300} height={220}>
+          <strong>Two modes, one screen</strong><br/><br/>
+          Left = agent in chat, walking through setup. Right = the same 5-section structure as the static Settings page, but live-filled. Either side is a valid path — talk to the agent OR click into a section and edit yourself.
+        </DCPostIt>
+        <DCPostIt width={300} height={220}>
+          <strong>Field provenance</strong><br/><br/>
+          Every field on the right has a "BY AGENT" or "BY YOU" tag. Blue gutter = agent filled it. Purple gutter = you overrode it. The chat references both — full audit of who decided what.
+        </DCPostIt>
+        <DCPostIt width={300} height={220}>
+          <strong>Pipeline pill at top</strong><br/><br/>
+          5 dots showing setup progress, mirrors the section state on the right. Active step highlighted in blue, done steps green. Same vocabulary as the campaign-launch flow in main FB Agent.
+        </DCPostIt>
+        <DCPostIt width={300} height={220}>
+          <strong>"Take over" escape hatch</strong><br/><br/>
+          Active section has a "Take over" button next to the agent's typing indicator. One click → agent pauses, all fields editable, you finish manually.
+        </DCPostIt>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

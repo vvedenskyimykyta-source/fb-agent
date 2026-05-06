@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>FB Agent · Launch Campaign</title>
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="launch.css"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+body { margin: 0; background: #f5f6f8; font-family: var(--font-sans); }
+.dc-app { padding: 0; }
+.note {
+  font-size: 12.5px; color: #6b7280; line-height: 1.5;
+  max-width: 1320px; margin: 0 auto; padding: 14px 24px;
+  background: #fff; border-bottom: 1px solid #e5e7eb;
+}
+.note h1 { font-size: 16px; margin: 0 0 4px; letter-spacing: -0.01em; }
+.note p { margin: 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="icons.jsx" type="text/babel"></script>
+<script src="design-canvas.jsx" type="text/babel"></script>
+<script src="launch-chat.jsx" type="text/babel"></script>
+<script src="launch-steps.jsx" type="text/babel"></script>
+<script src="launch-pipeline.jsx" type="text/babel"></script>
+
+<script type="text/babel">
+const { DesignCanvas, DCSection, DCArtboard } = window;
+const { LaunchPipeline } = window;
+
+function Frame({ scenario }) {
+  return (
+    <div className="lp-app" data-screen-label={scenario}>
+      <div style={{ width: 220, background: '#fff', borderRight: '1px solid #e5e7eb', padding: 14, display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <div style={{ padding: '6px 8px 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ width: 24, height: 24, borderRadius: 6, background: '#111827', color: 'white', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700 }}>A</div>
+          <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.01em' }}>AdFactory</span>
+        </div>
+        {[
+          { label: 'Dashboard' },
+          { label: 'Launch campaign', active: true },
+          { label: 'Live campaigns' },
+          { label: 'Asset Library' },
+          { label: 'Rules & automations' },
+          { label: 'Reports' },
+          { label: 'Settings' },
+        ].map((n) => (
+          <div key={n.label} style={{ padding: '7px 10px', borderRadius: 6, fontSize: 12.5, color: n.active ? '#111827' : '#6b7280', background: n.active ? '#f4f5f7' : 'transparent', fontWeight: n.active ? 600 : 500 }}>
+            {n.label}
+          </div>
+        ))}
+      </div>
+      <div className="lp-main">
+        <LaunchPipeline scenario={scenario}/>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <div className="note">
+        <h1>FB Agent · Launch Campaign — 8 screens</h1>
+        <p>One persistent layout (sidebar / chat / pipeline) walks through the 6-step flow + a launching state + a launched live dashboard. Each artboard shows the same campaign at a different point so you can read the whole story top-to-bottom. Scenario: CheckMyMeal · iOS · Quiz funnel #3 · DACH · ABO $80/d.</p>
+      </div>
+      <DesignCanvas defaultZoom={0.55}>
+        <DCSection id="flow" title="The 6-step flow">
+          <DCArtboard id="01-context"  label="01 · Step 1 · Context"            width={1440} height={1380}><Frame scenario="context"/></DCArtboard>
+          <DCArtboard id="02-campaign" label="02 · Step 2 · Campaign (template applied)" width={1440} height={1500}><Frame scenario="campaign"/></DCArtboard>
+          <DCArtboard id="03-adsets"   label="03 · Step 3 · Ad sets (4, one expanded)"  width={1440} height={1700}><Frame scenario="adsets"/></DCArtboard>
+          <DCArtboard id="04-ads"      label="04 · Step 4 · Ads (7 creatives)"          width={1440} height={1500}><Frame scenario="ads"/></DCArtboard>
+          <DCArtboard id="05-rules"    label="05 · Step 5 · Automation rules"           width={1440} height={1100}><Frame scenario="rules"/></DCArtboard>
+          <DCArtboard id="06-review"   label="06 · Step 6 · Review & launch"            width={1440} height={1900}><Frame scenario="review"/></DCArtboard>
+        </DCSection>
+        <DCSection id="states" title="Launch & live states">
+          <DCArtboard id="07-launching" label="07 · Launching overlay" width={1440} height={1400}><Frame scenario="launching"/></DCArtboard>
+          <DCArtboard id="08-launched"  label="08 · Launched · live dashboard" width={1440} height={1300}><Frame scenario="launched"/></DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

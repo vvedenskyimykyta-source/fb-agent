@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<title>AdFactory · FB Agent — концепты (PDF)</title>
+<link rel="stylesheet" href="styles.css"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="sidebar.jsx"></script>
+<script type="text/babel" src="topbar.jsx"></script>
+<script type="text/babel" src="chat.jsx"></script>
+<script type="text/babel" src="panel.jsx"></script>
+<script type="text/babel" src="launch-modal.jsx"></script>
+<script type="text/babel" src="fb-agent.jsx"></script>
+<style>
+  @page { size: 1500px 980px; margin: 0; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print-page {
+    width: 1500px;
+    height: 980px;
+    padding: 24px 30px;
+    background: white;
+    box-sizing: border-box;
+    page-break-after: always;
+    break-after: page;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    overflow: hidden;
+  }
+  .print-page:last-child { page-break-after: auto; break-after: auto; }
+
+  .print-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 10px;
+    flex-shrink: 0;
+  }
+  .print-title {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .print-subtitle {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: #6b7280;
+    margin: 4px 0 0;
+  }
+  .print-step {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    color: #2563eb;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .print-frame {
+    flex: 1;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(16,24,40,.06);
+    position: relative;
+  }
+  /* Scale 1440 → fits in 1440px content width nicely */
+  .print-frame .af-app {
+    border: none;
+    border-radius: 0;
+  }
+
+  body { background: #f3f4f6; }
+  @media screen {
+    body { padding: 24px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="env,react">
+const { FBAgent } = window;
+
+const PAGES = [
+  { phase: 'fresh',      step: '0 / 4', title: 'Пустое состояние',       sub: 'До первого запроса · подсказка и активный чип «Выбрать референс»' },
+  { phase: 'drafting',   step: '1 / 4', title: 'Агент готовит драфт',    sub: 'Статус-бар «Шаг 2 из 4: подтягиваю креативы…» · скелетоны в панели' },
+  { phase: 'ready',      step: '2 / 4', title: 'Драфт готов',            sub: '11 адсетов в панели · все поля заполнены агентом · кнопка «Запустить» активна' },
+  { phase: 'previewing', step: '3 / 4', title: 'Превью перед запуском',  sub: 'Модалка · сводка по адсетам, бюджету, креативам · подтверждение' },
+  { phase: 'launched',   step: '4 / 4', title: 'Запущено',               sub: '11/11 адсетов активны в Meta · 11 тасков → Active в AdFactory' },
+];
+
+function App() {
+  return (
+    <>
+      {PAGES.map((p, i) => (
+        <div key={p.phase} className="print-page">
+          <div className="print-header">
+            <div>
+              <h1 className="print-title">AdFactory · FB Agent — {p.title}</h1>
+              <p className="print-subtitle">{p.sub}</p>
+            </div>
+            <span className="print-step">Состояние {p.step}</span>
+          </div>
+          <div className="print-frame">
+            <FBAgent initialPhase={p.phase} initialOpenIdx={p.phase === 'ready' ? 0 : -1}/>
+          </div>
+        </div>
+      ))}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+
+// Auto-print after fonts + Babel ready
+(async () => {
+  if (document.fonts && document.fonts.ready) {
+    try { await document.fonts.ready; } catch (e) {}
+  }
+  setTimeout(() => window.print(), 800);
+})();
+</script>
+</body>
+</html>

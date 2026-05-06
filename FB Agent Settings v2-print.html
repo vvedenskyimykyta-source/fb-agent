@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>FB Agent · Settings v2 — print</title>
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="settings-v2.css"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="sidebar.jsx"></script>
+<script type="text/babel" src="settings-v2.jsx"></script>
+<script type="text/babel" src="settings-v2-rules.jsx"></script>
+<script type="text/babel" src="settings-v2b-deeplinks.jsx"></script>
+<script type="text/babel" src="settings-v2b.jsx"></script>
+<style>
+  html, body { background: #f0eee9; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .print-page {
+    width: 1440px;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.06);
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    position: relative;
+  }
+  .print-page + .print-page { margin-top: 24px; }
+  .print-label {
+    padding: 14px 32px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    background: #fafafa;
+    border-bottom: 1px solid #e5e7eb;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .print-label strong { color: #111827; font-weight: 700; }
+  .print-frame { position: relative; }
+
+  @page { size: 1480px 2520px; margin: 0; }
+  @media print {
+    html, body { background: white; }
+    .print-page {
+      box-shadow: none;
+      border: none;
+      margin: 0 auto !important;
+      page-break-after: always;
+      break-after: page;
+    }
+    .print-page:last-child { page-break-after: auto; break-after: auto; }
+    *, *::before, *::after {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="env,react">
+const { SettingsV2bPage } = window;
+
+const pages = [
+  { id: 'fresh',      label: 'A · Fresh · only Meta blocks usage · Web + Deep Links editable',     props: { scenario: 'fresh' } },
+  { id: 'configured', label: 'B · All 6 configured · Go to FB Agent active',                       props: { scenario: 'configured' } },
+  { id: 'skipped',    label: 'C · Skipped state · Notifications collapsed as Skipped',             props: { scenario: 'skipped-demo', focusSection: 'notifs' } },
+  { id: 'dl-filled',  label: 'D · Deep Links · filled table · iOS / Android / CPP',                props: { scenario: 'configured', focusSection: 'deeplinks' } },
+  { id: 'dl-modal',   label: 'E · Add Deep Link modal · Universal / Scheme / CPP',                 props: { scenario: 'configured', initialModal: 'deeplink' } },
+];
+
+function App() {
+  return (
+    <div>
+      {pages.map((p) => (
+        <div key={p.id} className="print-page">
+          <div className="print-label"><strong>{p.label.split(' · ')[0]}</strong> · {p.label.split(' · ').slice(1).join(' · ')}</div>
+          <div className="print-frame">
+            <SettingsV2bPage {...p.props}/>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+
+(async () => {
+  if (document.fonts && document.fonts.ready) await document.fonts.ready;
+  await new Promise((r) => setTimeout(r, 800));
+  window.print();
+})();
+</script>
+</body>
+</html>
